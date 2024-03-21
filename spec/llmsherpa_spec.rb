@@ -7,7 +7,7 @@ RSpec.describe Llmsherpa do
 
   describe Llmsherpa::Document do
     let(:json) { JSON.parse(File.read("#{RSPEC_ROOT}/docs/test_file.json")) }
-    let(:doc) { Llmsherpa::Document.new(json.dig('return_dict', 'result', 'blocks')) }
+    let(:doc) { Llmsherpa::Document.new(json.dig("return_dict", "result", "blocks")) }
 
     it "does something useful" do
       expect(doc.sections.size).to be 4
@@ -20,7 +20,7 @@ RSpec.describe Llmsherpa do
     let(:pdf_reader) { Llmsherpa::LayoutPDFReader.new(parser_api_url) }
 
     it "parses a PDF" do
-      VCR.use_cassette('parse_local_pdf') do
+      VCR.use_cassette("parse_local_pdf") do
         pdf_path = "#{RSPEC_ROOT}/docs/test_file.pdf"
         doc = pdf_reader.read_pdf(pdf_path)
         expect(doc.chunks.size).to be 5
@@ -29,7 +29,7 @@ RSpec.describe Llmsherpa do
     end
 
     it "downloads a remote PDF and parses it" do
-      VCR.use_cassette('remote_pdf') do
+      VCR.use_cassette("remote_pdf") do
         pdf_url = "https://www.orimi.com/pdf-test.pdf"
         doc = pdf_reader.read_pdf(pdf_url)
         expect(doc.chunks.size).to be 2

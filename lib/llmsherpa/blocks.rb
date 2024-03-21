@@ -1,18 +1,20 @@
+# frozen_string_literal: true
+
 module Llmsherpa
   # A block is a node in the layout tree. It can be a paragraph, a list item, a table, or a section header.
   # This is the base class for all blocks such as Paragraph, ListItem, Table, Section.
   class Block
     attr_accessor :tag, :level, :page_idx, :block_idx, :top, :left, :bbox, :sentences, :children, :parent, :block_json
 
-    def initialize(block_json=nil)
-      @tag = block_json['tag'] if block_json && block_json.key?('tag')
-      @level = (block_json['level'] if block_json && block_json.key?('level')) || 0
-      @page_idx = block_json['page_idx'] if block_json && block_json.key?('page_idx')
-      @block_idx = block_json['block_idx'] if block_json && block_json.key?('block_idx')
-      @top = block_json['top'] if block_json && block_json.key?('top')
-      @left = block_json['left'] if block_json && block_json.key?('left')
-      @bbox = block_json['bbox'] if block_json && block_json.key?('bbox')
-      @sentences = block_json['sentences'] if block_json && block_json.key?('sentences')
+    def initialize(block_json = nil)
+      @tag = block_json["tag"] if block_json&.key?("tag")
+      @level = (block_json["level"] if block_json&.key?("level")) || 0
+      @page_idx = block_json["page_idx"] if block_json&.key?("page_idx")
+      @block_idx = block_json["block_idx"] if block_json&.key?("block_idx")
+      @top = block_json["top"] if block_json&.key?("top")
+      @left = block_json["left"] if block_json&.key?("left")
+      @bbox = block_json["bbox"] if block_json&.key?("bbox")
+      @sentences = block_json["sentences"] if block_json&.key?("sentences")
       @children = []
       @parent = nil
       @block_json = block_json
@@ -25,12 +27,10 @@ module Llmsherpa
     end
 
     # Converts the block to html. This is a virtual method and should be implemented by the derived classes.
-    def to_html(include_children=false, recurse=false)
-    end
+    def to_html(include_children = false, recurse = false); end
 
     # Converts the block to text. This is a virtual method and should be implemented by the derived classes.
-    def to_text(include_children=false, recurse=false)
-    end
+    def to_text(include_children = false, recurse = false); end
 
     # Returns the parent chain of the block consisting of all the parents of the block until the root.
     def parent_chain
@@ -51,24 +51,24 @@ module Llmsherpa
       parent_chain.each do |p|
         if p.tag == "header"
           header_texts.push(p.to_text)
-        elsif ['list_item', 'para'].include?(p.tag)
+        elsif %w[list_item para].include?(p.tag)
           para_texts.push(p.to_text)
         end
       end
       text = header_texts.join(" > ")
-      text += "\n" + para_texts.join("\n") unless para_texts.empty?
+      text += "\n#{para_texts.join("\n")}" unless para_texts.empty?
       text
     end
 
     # Returns the text of the block with section information. This provides context to the text.
-    def to_context_text(include_section_info=true)
+    def to_context_text(include_section_info = true)
       text = ""
-      text += self.parent_text + "\n" if include_section_info
-      if ['list_item', 'para', 'table'].include?(@tag)
-        text += self.to_text(true, true)
-      else
-        text += self.to_text
-      end
+      text += "#{parent_text}\n" if include_section_info
+      text += if %w[list_item para table].include?(@tag)
+                to_text(true, true)
+              else
+                to_text
+              end
       text
     end
 
@@ -76,15 +76,15 @@ module Llmsherpa
     def iter_children(node, level, &node_visitor)
       node.children.each do |child|
         node_visitor.call(child)
-        self.iter_children(child, level + 1, &node_visitor) unless ['list_item', 'para', 'table'].include?(child.tag)
+        iter_children(child, level + 1, &node_visitor) unless %w[list_item para table].include?(child.tag)
       end
     end
 
     # Returns all the paragraphs in the block. This is useful for getting all the paragraphs in a section.
     def paragraphs
       paragraphs = []
-      self.iter_children(self, 0) do |node|
-        paragraphs.push(node) if node.tag == 'para'
+      iter_children(self, 0) do |node|
+        paragraphs.push(node) if node.tag == "para"
       end
       paragraphs
     end
@@ -92,8 +92,8 @@ module Llmsherpa
     # Returns all the chunks in the block. Chunking automatically splits the document into paragraphs, lists, and tables without any prior knowledge of the document structure.
     def chunks
       chunks = []
-      self.iter_children(self, 0) do |node|
-        chunks.push(node) if ['para', 'list_item', 'table'].include?(node.tag)
+      iter_children(self, 0) do |node|
+        chunks.push(node) if %w[para list_item table].include?(node.tag)
       end
       chunks
     end
@@ -102,8 +102,8 @@ module Llmsherpa
     # Returns all the tables in the block. This is useful for getting all the tables in a section.
     def tables
       tables = []
-      self.iter_children(self, 0) do |node|
-        tables.push(node) if node.tag == 'table'
+      iter_children(self, 0) do |node|
+        tables.push(node) if node.tag == "table"
       end
       tables
     end
@@ -111,8 +111,8 @@ module Llmsherpa
     # Returns all the sections in the block. This is useful for getting all the sections in a document.
     def sections
       sections = []
-      self.iter_children(self, 0) do |node|
-        sections.push(node) if node.tag == 'header'
+      iter_children(self, 0) do |node|
+        sections.push(node) if node.tag == "header"
       end
       sections
     end
@@ -120,21 +120,17 @@ module Llmsherpa
 
   # A paragraph is a block of text. It can have children such as lists. A paragraph has tag 'para'.
   class Paragraph < Block
-    def initialize(para_json)
-      super(para_json)
-    end
-
-    def to_text(include_children=false, recurse=false)
+    def to_text(include_children = false, recurse = false)
       para_text = @sentences.join("\n")
       if include_children
         @children.each do |child|
-          para_text += "\n" + child.to_text(include_children: recurse, recurse: recurse)
+          para_text += "\n#{child.to_text(include_children: recurse, recurse: recurse)}"
         end
       end
       para_text
     end
 
-    def to_html(include_children=false, recurse=false)
+    def to_html(include_children = false, recurse = false)
       html_str = "<p>"
       html_str += @sentences.join("\n")
       if include_children && !@children.empty?
@@ -158,17 +154,17 @@ module Llmsherpa
       @title = @sentences.join("\n")
     end
 
-    def to_text(include_children=false, recurse=false)
+    def to_text(include_children = false, recurse = false)
       text = @title
       if include_children
         @children.each do |child|
-          text += "\n" + child.to_text(include_children: recurse, recurse: recurse)
+          text += "\n#{child.to_text(include_children: recurse, recurse: recurse)}"
         end
       end
       text
     end
 
-    def to_html(include_children=false, recurse=false)
+    def to_html(include_children = false, recurse = false)
       html_str = "<h#{@level + 1}>#{@title}</h#{@level + 1}>"
       if include_children
         @children.each do |child|
@@ -181,21 +177,17 @@ module Llmsherpa
 
   # A list item is a block of text. It can have child list items. A list item has tag 'list_item'.
   class ListItem < Block
-    def initialize(list_json)
-      super(list_json)
-    end
-
-    def to_text(include_children=false, recurse=false)
+    def to_text(include_children = false, recurse = false)
       text = @sentences.join("\n")
       if include_children
         @children.each do |child|
-          text += "\n" + child.to_text(include_children: recurse, recurse: recurse)
+          text += "\n#{child.to_text(include_children: recurse, recurse: recurse)}"
         end
       end
       text
     end
 
-    def to_html(include_children=false, recurse=false)
+    def to_html(include_children = false, recurse = false)
       html_str = "<li>"
       html_str += @sentences.join("\n")
       if include_children && !@children.empty?
@@ -217,13 +209,13 @@ module Llmsherpa
 
     def initialize(cell_json)
       super(cell_json)
-      @col_span = cell_json['col_span'] if cell_json.key?('col_span')
-      @cell_value = cell_json['cell_value']
+      @col_span = cell_json["col_span"] if cell_json.key?("col_span")
+      @cell_value = cell_json["cell_value"]
       @cell_node = if @cell_value.is_a?(String)
-                    nil
-                  else
-                    Paragraph.new(@cell_value)
-                  end
+                     nil
+                   else
+                     Paragraph.new(@cell_value)
+                   end
     end
 
     def to_text
@@ -250,11 +242,11 @@ module Llmsherpa
     # Initializes a TableRow with child table cells
     def initialize(row_json)
       @cells = []
-      if row_json['type'] == 'full_row'
+      if row_json["type"] == "full_row"
         cell = TableCell.new(row_json)
         @cells << cell
       else
-        row_json['cells'].each do |cell_json|
+        row_json["cells"].each do |cell_json|
           cell = TableCell.new(cell_json)
           @cells << cell
         end
@@ -262,13 +254,12 @@ module Llmsherpa
     end
 
     # Returns text of a row with text from all the cells in the row delimited by '|'
-    def to_text(include_children=false, recurse=false)
-      cell_text = @cells.map(&:to_text).join(" | ")
-      cell_text
+    def to_text(_include_children = false, _recurse = false)
+      @cells.map(&:to_text).join(" | ")
     end
 
     # Returns html for a <tr> with html from all the cells in the row as <td>
-    def to_html(include_children=false, recurse=false)
+    def to_html(_include_children = false, _recurse = false)
       html_str = "<tr>"
       @cells.each { |cell| html_str += cell.to_html }
       html_str += "</tr>"
@@ -281,21 +272,21 @@ module Llmsherpa
     def initialize(row_json)
       super(row_json)
       @cells = []
-      row_json['cells'].each do |cell_json|
+      row_json["cells"].each do |cell_json|
         cell = TableCell.new(cell_json)
         @cells << cell
       end
     end
 
     # Returns text of a header row in markdown format
-    def to_text(include_children=false, recurse=false)
+    def to_text(_include_children = false, _recurse = false)
       cell_text = @cells.map(&:to_text).join(" | ")
       cell_text += "\n" + @cells.map { "---" }.join(" | ")
       cell_text
     end
 
     # Returns html for a <th> with html from all the cells in the row as <td>
-    def to_html(include_children=false, recurse=false)
+    def to_html(_include_children = false, _recurse = false)
       html_str = "<th>"
       @cells.each { |cell| html_str += cell.to_html }
       html_str += "</th>"
@@ -310,33 +301,31 @@ module Llmsherpa
   # This conversion assumes the presence of similarly functional TableCell, Paragraph, ListItem, and Section classes or modules in Ruby.
   class Table < Block
     # Initializes a Table with child table rows and headers
-    def initialize(table_json, parent)
+    def initialize(table_json, _parent)
       super(table_json)
       @rows = []
       @headers = []
       @name = table_json["name"]
-      if table_json.include?('table_rows')
-        table_json['table_rows'].each do |row_json|
-          if row_json['type'] == 'table_header'
-            row = TableHeader.new(row_json)
-            @headers << row
-          else
-            row = TableRow.new(row_json)
-            @rows << row
-          end
+      return unless table_json.include?("table_rows")
+
+      table_json["table_rows"].each do |row_json|
+        if row_json["type"] == "table_header"
+          row = TableHeader.new(row_json)
+          @headers << row
+        else
+          row = TableRow.new(row_json)
+          @rows << row
         end
       end
     end
 
     # Returns text of a table with text from all the rows in the table delimited by '\n'
-    def to_text(include_children=false, recurse=false)
-      text = @headers.map { |header| header.to_text }.join("\n") + "\n" +
-            @rows.map { |row| row.to_text }.join("\n")
-      text
+    def to_text(_include_children = false, _recurse = false)
+      "#{@headers.map(&:to_text).join("\n")}\n#{@rows.map(&:to_text).join("\n")}"
     end
 
     # Returns html for a <table> with html from all the rows in the table as <tr>
-    def to_html(include_children=false, recurse=false)
+    def to_html(_include_children = false, _recurse = false)
       html_str = "<table>"
       @headers.each { |header| html_str += header.to_html }
       @rows.each { |row| html_str += row.to_html }
@@ -370,14 +359,13 @@ module Llmsherpa
 
     # Returns text of a document by iterating through all the sections '\n'
     def to_text
-      text = sections.map { |section| section.to_text(include_children=true, recurse=true) }.join("\n")
-      text
+      sections.map { |section| section.to_text(true, true) }.join("\n")
     end
 
     # Returns html for the document by iterating through all the sections
     def to_html
       html_str = "<html>"
-      sections.each { |section| html_str += section.to_html(include_children=true, recurse=true) }
+      sections.each { |section| html_str += section.to_html(true, true) }
       html_str += "</html>"
       html_str
     end
@@ -385,7 +373,7 @@ module Llmsherpa
 
   class LayoutReader
     # Reads the layout tree from the JSON returned by the parser API.
-    
+
     def debug(pdf_root)
       iter_children = lambda do |node, level|
         node.children.each do |child|
@@ -404,37 +392,34 @@ module Llmsherpa
       list_stack = []
 
       blocks_json.each do |block|
-        if block['tag'] != 'list_item' && !list_stack.empty?
-          list_stack = []
-        end
+        list_stack = [] if block["tag"] != "list_item" && !list_stack.empty?
 
-        node = case block['tag']
-        when 'para'
-          Paragraph.new(block)
-        when 'table'
-          Table.new(block, prev_node)
-        when 'list_item'
-          ListItem.new(block)
-        when 'header'
-          Section.new(block)
-        else
-          raise "Unsupported block type: #{block['tag']}"
-        end
+        node = case block["tag"]
+               when "para"
+                 Paragraph.new(block)
+               when "table"
+                 Table.new(block, prev_node)
+               when "list_item"
+                 ListItem.new(block)
+               when "header"
+                 Section.new(block)
+               else
+                 raise "Unsupported block type: #{block["tag"]}"
+               end
 
-        if block['tag'] == 'para'
+        case block["tag"]
+        when "para"
           parent.add_child(node)
-        elsif block['tag'] == 'table'
+        when "table"
           parent.add_child(node)
-        elsif block['tag'] == 'list_item'
-          if prev_node.tag == 'para' && prev_node.level == node.level
+        when "list_item"
+          if prev_node.tag == "para" && prev_node.level == node.level
             list_stack << prev_node
-          elsif prev_node.tag == 'list_item'
+          elsif prev_node.tag == "list_item"
             if node.level > prev_node.level
               list_stack << prev_node
             elsif node.level < prev_node.level
-              while !list_stack.empty? && list_stack.last.level > node.level
-                list_stack.pop
-              end
+              list_stack.pop while !list_stack.empty? && list_stack.last.level > node.level
             end
           end
           if list_stack.any?
@@ -442,14 +427,12 @@ module Llmsherpa
           else
             parent.add_child(node)
           end
-        elsif block['tag'] == 'header'
+        when "header"
           if node.level > parent.level
             parent_stack << node
             parent.add_child(node)
           else
-            while parent_stack.length > 1 && parent_stack.last.level >= node.level
-              parent_stack.pop
-            end
+            parent_stack.pop while parent_stack.length > 1 && parent_stack.last.level >= node.level
             parent_stack.last.add_child(node)
             parent_stack << node
           end

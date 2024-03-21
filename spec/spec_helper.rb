@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "llmsherpa"
-require 'json'
-require 'webmock/rspec'
-require 'vcr'
+require "json"
+require "webmock/rspec"
+require "vcr"
 
 RSPEC_ROOT = File.dirname __FILE__
 
@@ -20,6 +20,6 @@ RSpec.configure do |config|
 end
 
 VCR.configure do |c|
-  c.cassette_library_dir = 'spec/vcr_cassettes'
+  c.cassette_library_dir = "spec/vcr_cassettes"
   c.hook_into :webmock
 end
