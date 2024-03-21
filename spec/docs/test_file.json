@@ -1,0 +1,295 @@
+{
+  "return_dict": {
+    "num_pages": 1,
+    "page_dim": [
+      612,
+      792
+    ],
+    "result": {
+      "blocks": [
+        {
+          "bbox": [
+            72,
+            90.76,
+            349.78,
+            110.76
+          ],
+          "block_class": "cls_0",
+          "block_idx": 0,
+          "level": 0,
+          "page_idx": 0,
+          "sentences": [
+            "LlmSherpa Ruby Gem Test File"
+          ],
+          "tag": "header"
+        },
+        {
+          "bbox": [
+            72,
+            135.46,
+            180.47,
+            151.46
+          ],
+          "block_class": "cls_1",
+          "block_idx": 1,
+          "level": 0,
+          "page_idx": 0,
+          "sentences": [
+            "First paragraph"
+          ],
+          "tag": "header"
+        },
+        {
+          "bbox": [
+            72,
+            162.92,
+            539.42,
+            304.84
+          ],
+          "block_class": "cls_2",
+          "block_idx": 2,
+          "level": 1,
+          "page_idx": 0,
+          "sentences": [
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "Volutpat blandit aliquam etiam erat velit.",
+            "Amet nisl purus in mollis nunc sed id semper.",
+            "Porttitor lacus luctus accumsan tortor posuere ac ut consequat semper.",
+            "Laoreet non curabitur gravida arcu ac tortor.",
+            "Amet venenatis urna cursus eget nunc scelerisque viverra mauris in.",
+            "Imperdiet proin fermentum leo vel orci.",
+            "Massa sapien faucibus et molestie ac.",
+            "Pharetra diam sit amet nisl suscipit.",
+            "Semper feugiat nibh sed pulvinar.",
+            "Pretium vulputate sapien nec sagittis aliquam malesuada bibendum.",
+            "Netus et malesuada fames ac.",
+            "Sociis natoque penatibus et magnis dis.",
+            "Adipiscing at in tellus integer.",
+            "Amet nisl purus in mollis nunc sed id semper.",
+            "Auctor eu augue ut lectus arcu.",
+            "Nunc congue nisi vitae suscipit.",
+            "Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed.",
+            "Nibh venenatis cras sed felis eget velit."
+          ],
+          "tag": "para"
+        },
+        {
+          "bbox": [
+            72,
+            326.08,
+            205.4,
+            342.08
+          ],
+          "block_class": "cls_1",
+          "block_idx": 3,
+          "level": 0,
+          "page_idx": 0,
+          "sentences": [
+            "Second Paragraph"
+          ],
+          "tag": "header"
+        },
+        {
+          "bbox": [
+            72,
+            353.54,
+            532.68,
+            379.09
+          ],
+          "block_class": "cls_2",
+          "block_idx": 4,
+          "level": 1,
+          "page_idx": 0,
+          "sentences": [
+            "Ut ornare lectus sit amet.",
+            "Malesuada proin libero nunc consequat.",
+            "Netus et malesuada fames ac turpis.",
+            "Elit ut aliquam purus sit amet.",
+            "Arcu non sodales neque sodales ut etiam sit amet nisl."
+          ],
+          "tag": "para"
+        },
+        {
+          "bbox": [
+            77.25,
+            403.18,
+            414.3,
+            414.18
+          ],
+          "block_class": "cls_3",
+          "block_idx": 5,
+          "left": 77.25,
+          "level": 2,
+          "name": "Second Paragraph",
+          "page_idx": 0,
+          "table_rows": [
+            {
+              "block_idx": 5,
+              "cells": [
+                {
+                  "cell_value": "Column A"
+                },
+                {
+                  "cell_value": "Column B"
+                },
+                {
+                  "cell_value": "Column C"
+                }
+              ],
+              "type": "table_header"
+            },
+            {
+              "block_idx": 6,
+              "cells": [
+                {
+                  "cell_value": "123"
+                },
+                {
+                  "cell_value": "456"
+                },
+                {
+                  "cell_value": "789"
+                }
+              ],
+              "type": "table_data_row"
+            },
+            {
+              "block_idx": 7,
+              "cells": [
+                {
+                  "cell_value": "First"
+                },
+                {
+                  "cell_value": "Second"
+                },
+                {
+                  "cell_value": "Third"
+                }
+              ],
+              "type": "table_data_row"
+            }
+          ],
+          "tag": "table",
+          "top": 403.18
+        },
+        {
+          "bbox": [
+            72,
+            484.18,
+            531.5,
+            538.82
+          ],
+          "block_class": "cls_2",
+          "block_idx": 8,
+          "level": 1,
+          "page_idx": 0,
+          "sentences": [
+            "Ante in nibh mauris cursus mattis molestie a iaculis.",
+            "Nunc aliquet bibendum enim facilisis gravida.",
+            "Vel quam elementum pulvinar etiam non quam lacus suspendisse faucibus.",
+            "Blandit volutpat maecenas volutpat blandit aliquam etiam.",
+            "Tellus pellentesque eu tincidunt tortor.",
+            "Diam volutpat commodo sed egestas."
+          ],
+          "tag": "para"
+        },
+        {
+          "bbox": [
+            72,
+            560.05,
+            187.59,
+            576.05
+          ],
+          "block_class": "cls_1",
+          "block_idx": 9,
+          "level": 0,
+          "page_idx": 0,
+          "sentences": [
+            "Third Paragraph"
+          ],
+          "tag": "header"
+        },
+        {
+          "bbox": [
+            72,
+            587.52,
+            530.85,
+            700.34
+          ],
+          "block_class": "cls_2",
+          "block_idx": 10,
+          "level": 1,
+          "page_idx": 0,
+          "sentences": [
+            "Pulvinar neque laoreet suspendisse interdum consectetur libero id faucibus.",
+            "Eget dolor morbi non arcu risus quis varius quam quisque.",
+            "Enim ut tellus elementum sagittis vitae et leo duis.",
+            "Sed viverra ipsum nunc aliquet.",
+            "Faucibus interdum posuere lorem ipsum dolor sit amet.",
+            "Nulla facilisi cras fermentum odio eu feugiat pretium nibh.",
+            "Etiam erat velit scelerisque in dictum non consectetur a erat.",
+            "Ridiculus mus mauris vitae ultricies leo integer.",
+            "Varius duis at consectetur lorem.",
+            "Nibh praesent tristique magna sit amet purus gravida quis blandit.",
+            "Sem et tortor consequat id porta nibh venenatis cras sed.",
+            "Praesent elementum facilisis leo vel fringilla.",
+            "Malesuada nunc vel risus commodo viverra maecenas.",
+            "Sed velit dignissim sodales ut.",
+            "Laoreet sit amet cursus sit.",
+            "Lacus vel facilisis volutpat est velit egestas dui id ornare.",
+            "Etiam erat velit scelerisque in dictum non consectetur.",
+            "Etiam non quam lacus suspendisse faucibus."
+          ],
+          "tag": "para"
+        }
+      ],
+      "styles": [
+        {
+          "class_name": "cls_0",
+          "style": {
+            "font-family": "ArialMT",
+            "font-size": 28.799999999999997,
+            "font-style": "normal",
+            "font-weight": 400,
+            "text-align": "left",
+            "text-transform": "none"
+          }
+        },
+        {
+          "class_name": "cls_1",
+          "style": {
+            "font-family": "ArialMT",
+            "font-size": 23.04,
+            "font-style": "normal",
+            "font-weight": 400,
+            "text-align": "left",
+            "text-transform": "none"
+          }
+        },
+        {
+          "class_name": "cls_2",
+          "style": {
+            "font-family": "ArialMT",
+            "font-size": 15.839999999999998,
+            "font-style": "normal",
+            "font-weight": 400,
+            "text-align": "left",
+            "text-transform": "none"
+          }
+        },
+        {
+          "class_name": "cls_3",
+          "style": {
+            "font-family": "Arial-BoldMT",
+            "font-size": 15.839999999999998,
+            "font-style": "normal",
+            "font-weight": 600,
+            "text-align": "left",
+            "text-transform": "none"
+          }
+        }
+      ]
+    }
+  },
+  "status": null
+}
